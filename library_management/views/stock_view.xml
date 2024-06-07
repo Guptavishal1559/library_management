@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="stock_form_view" model="ir.ui.view">
+        <field name="name">stock.form.view</field>
+        <field name="model">library.stock</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button id="action_confirm" name="action_confirm" string="Confirm" type="object"
+                            class="btn-primary"/>
+                    <button id="print_rec" name="print_rec" string="Print" type="object"/>
+                    <button id="create_rec" name="create_rec" string="Create" type="object"/>
+                    <button id="search_rec" name="search_rec" string="Search" type="object"/>
+                    <button id="browse_rec" name="browse_rec" string="Browse" type="object"/>
+                    <button id="delete_rec" name="delete_rec" string="Delete" type="object"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+                </header>
+                <sheet>
+                    <div class="row">
+                        <div class="col">
+                            <h1 bg_color="bg-danger">Book Stock Form</h1>
+                            <hr/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-6">
+                            <group>
+                                <field name="photo" widget="image" class="oe_avatar"/>
+                                <field name="book_id"/>
+                                <field name="isbn"/>
+                                <field name="language"/>
+                            </group>
+                        </div>
+                        <div class="col col-md-6">
+                            <group>
+                                <!--Exercise2-Q8======================================================-->
+                                <field name="book_ids" widget="many2many_tags"/>
+                                <field name="price" avg='Avg'/>
+                                <field name="total_qty"/>
+                                <field name="remaining_qty"/>
+                                <field name="parent_id"/>
+                                <!--<field name="final_fees_amount"/>-->
+                                <!--<field name="currency_id"/>-->
+                            </group>
+                        </div>
+                    </div>
+                    <notebook>
+                        <page id="author" string="Author">
+                            <!--Exercise2-Q8======================================================-->
+                            <field name="author_ids"/>
+                        </page>
+                        <page id="author" string="Issued">
+                        </page>
+                        <page id="book" string="Books">
+                            <field name="books_ids"/>
+                        </page>
+                        <page id="author" string="Returned">
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--+++++++++++++++++++++Tree view start from here++++++++++++++++++++++++++++++++++-->
+    <record id="stock_view_tree" model="ir.ui.view">
+        <field name="name">stock.view.tree</field>
+        <field name="model">library.stock</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="book_id"/>
+                <field name="book_ids"/>
+                <field name="isbn"/>
+                <field name="language"/>
+                <field name="price"/>
+                <field name="remaining_qty"/>
+                <field name="total_qty"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    +++++++++++++++++++++++++++Kanban view+++++++++++++++++++++++++++++++++++++-->
+    <record id="stock_kanban_view" model="ir.ui.view">
+        <field name="name">stock.kanban.view</field>
+        <field name="model">library.stock</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click oe_kanban_card">
+                            <div class="o_kanban_image" style="width:30%;float:left;display:inline-block;">
+                                <img alt="No Image" class="oe_avatar"
+                                     t-att-src="kanban_image('library.stock','photo',record.id.raw_value)"/>
+                            </div>
+                            <div>
+                                <b>Book Name:</b>
+                                <field name="book_id"/>
+                                <br/>
+                                <b>ISBN:</b>
+                                <field name="isbn"/>
+                                <br/>
+                                <b>Price:</b>
+                                <field name="price"/>
+                                <br/>
+                                <b>Remain Qty:</b>
+                                <field name="remaining_qty"/>
+                                <br/>
+                                <b>Total Qty:</b>
+                                <field name="total_qty"/>
+                                <br/>
+                                <b>Language:</b>
+                                <field name="language"/>
+                                <br/>
+                                <b>Bood IDs:</b>
+                                <field name="book_ids"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--++++++++++++++++++++++++++Graph veiw start+++++++++++++++++++++++++++++++++++++++-->
+    <record id="stock_graph_view" model="ir.ui.view">
+        <field name="name">stock.graph.view</field>
+        <field name="model">library.stock</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="book_id"/>
+                <field name="book_ids"/>
+                <field name="language"/>
+                <field name="price"/>
+            </graph>
+        </field>
+    </record>
+
+    <!--++++++++++++++++++++++++++Search veiw start+++++++++++++++++++++++++++++++++++++++-->
+    <record id="stock_search_view" model="ir.ui.view">
+        <field name="name">stock.search.view</field>
+        <field name="model">library.stock</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="book_id"/>
+                <field name="book_ids"/>
+                <field name="language"/>
+                <!--Adding group by in the search view-->
+                <filter name="group_by_book_name" string="Book Name" context="{'group_by':'book_id'}"/>
+                <filter name="group_by_book_language" string="Book Language" context="{'group_by':'language'}"/>
+                <filter name="group_by_book_genre" string="Book Genre" context="{'group_by':'book_ids'}"/>
+                <!--Adding filter in the search view-->
+
+            </search>
+        </field>
+    </record>
+    <!--+++++++++++++++++++++++++Action+++++++++++++++++++++++++++++++++++++++++++-->
+    <record id="action_library" model="ir.actions.act_window">
+        <field name="name">Stock</field>
+        <field name="res_model">library.stock</field>
+        <field name="view_mode">kanban,tree,form,graph</field>
+    </record>
+
+
+    <menuitem id="menu_library" name="Library"/>
+    <menuitem id="menu_library_item" name="Library" parent="menu_library"/>
+    <menuitem id="menu_library_library" action="action_library" parent="menu_library_item"/>
+    <menuitem id="menu_configuration" name="Configuration" parent="menu_library"/>
+    <menuitem id="menu_books" name="Books" parent="menu_library"/>
+    <menuitem id="menu_member" name="Member" parent="menu_library"/>
+</odoo>

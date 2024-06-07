@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="book_issue_form_view" model="ir.ui.view">
+        <field name="name">book.issue.form.view</field>
+        <field name="model">book.issue</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="print_rec" string="Print" type="object"/>
+                    <button name="create_rec" string="Create" type="object"/>
+<!--                    <button name="browse_rec" string="Browse" type="object"/>-->
+<!--                    <button name="delete_rec" string="Delete" type="object"/>-->
+<!--                    <button name="copy_rec" string="Copy" type="object"/>-->
+                    <field name="status" widget="statusbar"/>
+<!--                    <button name="search_rec" string="Search" type="object"/>-->
+                </header>
+                <sheet>
+                    <div class="row">
+                        <div class="col">
+                            <h1 bg_color="bg-danger">Book Issue</h1>
+                            <hr/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-6">
+                            <group>
+                                <field name="name_id"/>
+<!--                                <field name="name_id" options="{'no_create':1, 'no_open':1}"/>-->
+                                <field name="age"/>
+                                <field name="gender" placeholder="Select your gender"/>
+                                <field name="email"/>
+                                <field name="phone"/>
+                                <field name="address"/>
+                            </group>
+                        </div>
+                        <div class="col col-md-6">
+                            <group>
+                                <!--Exercise2-Q9==================================================-->
+                                <!--Exercise2-Q10==================================================-->
+                                <field name="book_name"/>
+<!--                                <field name="book_name" options="{'no_create':1, 'no_open':1}"/>-->
+                                <field name="book_price"/>
+                                <field name="book_quantity"/>
+                                <field name="date"/>
+                                <field name="days"/>
+                                <field name="return_date"/>
+                                <field name="currency_id"/>
+                                <field name="total_amt"/>
+                                <field name="ref"/>
+                                <field name="file_name" invisible="1"/>
+                                <!--Exercise2-Q13===================================================-->
+                                <!--Exercise2-Q15===================================================-->
+                                <field name="document" filename="file_name"/>
+                            </group>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--    ++++++++++++++++++++++++++++tree view+++++++++++++++++++++++++++++++-->
+    <record id="book_issue_tree_view" model="ir.ui.view">
+        <field name="name">book.issue.tree.view</field>
+        <field name="model">book.issue</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name_id"/>
+                <field name="age" avg='Avg'/>
+                <field name="gender"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="address"/>
+                <field name="book_name"/>
+                <field name="book_price"/>
+                <field name="book_quantity"/>
+                <field name="date"/>
+                <field name="days"/>
+                <field name="return_date"/>
+                <field name="total_amt"/>
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+    <!--    ++++++++++++++++++++++++++SEARCH VIEW++++++++++++++++++++++++++++++++++++++++-->
+    <record id="issue_book_search" model="ir.ui.view">
+        <field name="name">issue.book.search</field>
+        <field name="model">book.issue</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name_id"/>
+                <field name="address"/>
+                <field name="book_name"/>
+                <!--Adding filter in the search view-->
+                <filter name="filter_by_male" string="Male" domain="[('gender','=','male')]"/>
+                <filter name="filter_by_female" string="Female" domain="[('gender','=','female')]"/>
+                <!--Adding group by in the search view-->
+                <filter name="group_by_gender" string="Gender" context="{'group_by':'gender'}"/>
+                <filter name="group_by_book" string="Book" context="{'group_by':'book_name'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!--    ++++++++++++++++++action++++++++++++++++++++++++++++++++++-->
+    <record id="action_book_issue" model="ir.actions.act_window">
+        <field name="name">Book Issue</field>
+        <field name="res_model">book.issue</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_group_by_gender':1}</field>
+    </record>
+
+    <menuitem id="book_issue" action="action_book_issue" parent="library_management.menu_books"/>
+</odoo>

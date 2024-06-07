@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="book_dept_form_view" model="ir.ui.view">
+        <field name="name">book.dept.form.view</field>
+        <field name="model">book.dept</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="print_rec" string="Print" type="object"/>
+                    <button name="create_rec" string="Create" type="object"/>
+                    <button name="search_rec" string="Search" type="object"/>
+                    <button name="browse_rec" string="Browse" type="object"/>
+                    <button name="delete_rec" string="Delete" type="object"/>
+                    <button name="copy_rec" string="Copy" type="object"/>
+<!--                    <button name="update_rec" string="Update" type="object"/>-->
+                </header>
+                <sheet>
+                    <div class="row">
+                        <div class="col">
+                            <h1 bg_color="bg-danger">Book Department</h1>
+                            <hr/>
+                        </div>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="code"/>
+                        </h1>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-6">
+                            <group>
+                                <field name="name" placeholder="Enter the book name"/>
+                                <field name="isbn"/>
+                                <field name="language_id"/>
+                                <field name="book_price" placeholder="book price"/>
+                            </group>
+                        </div>
+                        <div class="col col-md-6">
+                            <group>
+                                <field name="genre" placeholder="Genre" widget="many2many_tags"/>
+                                <field name="publish_date"/>
+                                <field name="quantity"/>
+                            </group>
+                        </div>
+                    </div>
+                    <notebook>
+                        <page name="author" String="Author Details">
+                            <field name="author_ids" editable="bottom"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--+++++++++++++++++++++++++++++Tree View++++++++++++++++++++++++++++++++++-->
+    <record id="book_dept_tree_view" model="ir.ui.view">
+        <field name="name">book.dept.tree.view</field>
+        <field name="model">book.dept</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="code" size="4"/>
+                <field name="name"/>
+                <field name="isbn"/>
+                <field name="language_id"/>
+                <field name="book_price"/>
+                <field name="genre"/>
+                <field name="author_ids"/>
+                <field name="publish_date"/>
+                <field name="quantity"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--+++++++++++++++++++++++++++++Kanban View++++++++++++++++++++++++++++++++++-->
+    <record id="book_dept_kanban_view" model="ir.ui.view">
+        <field name="name">book.dept.kanban.view</field>
+        <field name="model">book.dept</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click oe_kanban_card">
+                            <div>
+                                <b>Code:</b>
+                                <field name="code"/>
+                                <br/>
+                                <b>Book Name:</b>
+                                <field name="name"/>
+                                <br/>
+                                <b>ISBN:</b>
+                                <field name="isbn"/>
+                                <br/>
+                                <b>Language:</b>
+                                <field name="language_id"/>
+                                <br/>
+                                <b>Book Price:</b>
+                                <field name="book_price"/>
+                                <br/>
+                                <b>Genre:</b>
+                                <field name="genre"/>
+                                <b>Author:</b>
+                                <field name="author_ids"/>
+                                <b>Qty:</b>
+                                <field name="quantity"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--+++++++++++++++++++++++++++++++++SEARCH VIEW+++++++++++++++++++++++++++++++++++++++-->
+    <record id="book_dept_search_view" model="ir.ui.view">
+        <field name="name">book.dept.search.view</field>
+        <field name="model">book.dept</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="isbn"/>
+                <field name="genre"/>
+                <field name="author_ids"/>
+                <field name="language_id"/>
+                <!--Adding filter in the search veiw-->
+                <filter name="group_by_language" string="Language" context="{'group_by':'language_id'}"/>
+                <filter name="group_by_genre" string="Genre" context="{'group_by':'genre'}"/>
+                <!--Adding Group By in the search view-->
+                <filter name="filter_hindi_book" string="Hindi Book" domain="[('language_id','=','Hindi')]"/>
+                <filter name="filter_marathi_book" string="Marathi Book" domain="[('language_id','=','Marathi')]"/>
+                <filter name="filter_english_book" string="English Book" domain="[('language_id','=','English')]"/>
+                <filter name="filter_gujrati_book" string="Gujarati Book" domain="[('language_id','=','Gujrati')]"/>
+            </search>
+        </field>
+    </record>
+
+    <!--+++++++++++++++++++++++++++Action start+++++++++++++++++++++++++++++++++++    -->
+    <record id="action_book_dept" model="ir.actions.act_window">
+        <field name="name">ADD Book</field>
+        <field name="res_model">book.dept</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <menuitem id="book_dept_list" action="action_book_dept" parent="library_management.menu_books"/>
+</odoo>

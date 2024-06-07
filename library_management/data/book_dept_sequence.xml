@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- We add data tag with no update so that it does not update the seq with every update back to 1 -->
+    <data noupdate="1">
+    <!--sequence for creating a book id-->
+        <record id="seq_book_id" model="ir.sequence">
+            <!--name of the sequence-->
+            <field name="name">Book Sequence</field>
+            <!--Code of the sequence-->
+            <field name="code">book.dept</field>
+            <!-- Prefix of the sequence -->
+            <!-- Basically a string which will show before the no -->
+            <field name="prefix">BK</field>
+            <!-- Padding of zeros to make the no of 5 digits -->
+            <field name="padding">5</field>
+
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

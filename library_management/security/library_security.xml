@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--  Group for Library Admin-->
+    <record id="group_library_admin" model="res.groups">
+        <field name="name">Library Admin</field>
+    </record>
+
+    <!--  Group for School User -->
+    <record id="group_library_user" model="res.groups">
+        <field name="name">Library User</field>
+    </record>
+
+</odoo>

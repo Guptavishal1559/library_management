@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="user_view_form" model="ir.ui.view">
+        <field name="name">user.view.form</field>
+        <field name="model">library.user</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="print_user" string="Print" type="object"/>
+                    <button name="create_user_rec" string="Create" type="object"/>
+                    <button name="copy_rec" string="Copy" type="object"/>
+                    <button name="delete_user_rec" string="Delete" type="object"/>
+                    <button name="browse_rec" string="Browse" type="object"/>
+                    <button name="search_rec" string="Search" type="object"/>
+                </header>
+                <sheet>
+                    <label for="name"/>
+                    <h1 colspan="4">
+                        <field name="photo" widget="image" class="oe_avatar"/>
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="age"/>
+                            <field name="gender"/>
+                            <field name="birth_date"/>
+                        </group>
+                        <group>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="address"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!--++++++++++++++++++++++++++++TREE VIEW START++++++++++++++++++++++++++++++++++++++++++-->
+    <record id="user_tree_view" model="ir.ui.view">
+        <field name="name">user.tree.view</field>
+        <field name="model">library.user</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <!--Exercise2-Q16======================================-->
+                <field name="age"/>
+                <field name="gender"/>
+                <field name="email"/>
+                <field name="birth_date"/>
+                <field name="phone"/>
+                <field name="address"/>
+                <field name="photo"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--++++++++++++++++++++++++++++++KANBAN VIEW+++++++++++++++++++++++++++++++++++++++-->
+    <record id="user_kanban_view" model="ir.ui.view">
+        <field name="name">user.kanban.view</field>
+        <field name="model">library.user</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click oe_kanban_card">
+                            <div class="o_kanban_image" style="width:30%;float:left;display:inline-block;">
+                                <img alt="No Image" class="oe_avatar"
+                                     t-att-src="kanban_image('library.user', 'photo', record.id.raw_value)"/>
+                            </div>
+                            <div>
+                                <b>Name:</b>
+                                <field name="name"/>
+                                <br/>
+                                <b>Age:</b>
+                                <field name="age"/>
+                                <b>    Gender:</b>
+                                <field name="gender"/>
+                                <br/>
+                                <b>Birth Date:</b>
+                                <field name="birth_date"/>
+                                <br/>
+                                <b>Email:</b>
+                                <field name="email"/>
+                                <br/>
+                                <b>Address:</b>
+                                <field name="address"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+<!--++++++++++++++++++++++++++SEARCH START++++++++++++++++++++++++++++++++++++++++-->
+    <record id="user_search_view" model="ir.ui.view">
+        <field name="name">user.search.view</field>
+        <field name="model">library.user</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="gender"/>
+                <field name="age"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="address"/>
+                <!--Adding filters in the search veiw -->
+                <filter name="filter_gender_male" string="Male" domain="[('gender','=','male')]"/>
+                <filter name="filter_gender_femail" string="Female" domain="[('gender','=','female')]"/>
+                <!-- Adding Group By in the Search View -->
+                <filter name="group_by_gender" string="Gender" context="{'group_by':'gender'}"/>
+                <filter name="group_by_age" string="Age" context="{'group_by':'age'}"/>
+                <filter name="group_by_address" string="Address" context="{'group_by':'address'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!--++++++++++++++++++++ACTIONS START++++++++++++++++++++++++++++++++++++++++++++-->
+    <record id="user_action" model="ir.actions.act_window">
+        <field name="name">User</field>
+        <field name="res_model">library.user</field>
+        <field name="view_mode">kanban,tree,form</field>
+<!--        <field name="context">{'search_default_group_by_gender':1}</field>-->
+    </record>
+
+    <!--Creating a Action for Male Students-->
+<!--    <record id="user_action_male" model="ir.actions.act_window">-->
+<!--        <field name="name">Male</field>-->
+<!--        <field name="res_model">library.user</field>-->
+<!--        <field name="view_mode">kanban,tree,form</field>-->
+<!--        <field name="domain">[('gender','=','male')]</field>-->
+<!--        <field name="context">{'default_gender':'male'}</field>-->
+<!--    </record>-->
+
+    <!--    Creating a Action for Female Student-->
+<!--    <record id="user_action_female" model="ir.actions.act_window">-->
+<!--        <field name="name">Female</field>-->
+<!--        <field name="res_model">library.user</field>-->
+<!--        <field name="view_mode">kanban,tree,form</field>-->
+<!--        <field name="domain">[('gender','=','female')]</field>-->
+<!--        <field name="context">{'default_gender':'female'}</field>-->
+<!--    </record>-->
+
+    <menuitem id="user_action_menu" action="user_action" parent="library_management.menu_member"/>
+<!--    <menuitem id="user_action_menu_male" action="user_action_male" parent="library_management.menu_member"/>-->
+<!--    <menuitem id="user_action_menu_female" action="user_action_female" parent="library_management.menu_member"/>-->
+
+</odoo>

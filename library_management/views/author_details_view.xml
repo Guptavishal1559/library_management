@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="author_details_form_view" model="ir.ui.view">
+        <field name="name">author.details.form.view</field>
+        <field name="model">author.details</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="row">
+                        <div class="col col-md-2">
+                            <field name="photo" widget="image" class="oe_avatar"/>
+                        </div>
+                        <div class="col col-md-8">
+                            <p>Author Name</p>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-6">
+                            <h1>Author Details</h1>
+                            <group>
+                                <field name="nationality"/>
+                            </group>
+                        </div>
+                        <div class="col col-md-6">
+                            <h1>Extra Details</h1>
+                            <br/>
+                            <group>
+                                <field name="born"/>
+                                <field name="died"/>
+                            </group>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--+++++++++++++++Tree view+++++++++++++++++++++++++++++++++-->
+    <record id="author_details_tree_view" model="ir.ui.view">
+        <field name="name">author.details.tree.view</field>
+        <field name="model">author.details</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="nationality"/>
+                <field name="born"/>
+                <field name="died"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--+++++++++++++++Kanban view+++++++++++++++++++++++++++++++++-->
+    <record id="author_details_kanban_view" model="ir.ui.view">
+        <field name="name">author.details.kanban.view</field>
+        <field name="model">author.details</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click oe_kanban_card">
+                            <div>
+                                <b>Name:</b>
+                                <field name="name"/>
+                                <br/>
+                                <b>Nationality:</b>
+                                <field name="nationality"/>
+                                <br/>
+                                <b>Born:</b>
+                                <field name="born"/>
+                                <br/>
+                                <b>Died:</b>
+                                <field name="died"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--+++++++++++++++Search view+++++++++++++++++++++++++++++++++-->
+    <record id="author_details_search_view" model="ir.ui.view">
+        <field name="name">author.details.search.view</field>
+        <field name="model">author.details</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="nationality"/>
+                <!--Adding Filter in the search view-->
+                <!--Adding Group By in the seacch view-->
+                <filter name="group_by_nationality" string="Nationality" context="{'group_by':'nationality'}"/>
+
+            </search>
+        </field>
+    </record>
+
+
+    <!--+++++++++++++++Action view+++++++++++++++++++++++++++++++++-->
+    <record id="author_details_action" model="ir.actions.act_window">
+        <field name="name">Authors</field>
+        <field name="res_model">author.details</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <menuitem id="author_action" action="author_details_action" parent="library_management.menu_books"/>
+
+</odoo>

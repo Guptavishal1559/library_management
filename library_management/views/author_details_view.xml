@@ -4,8 +4,22 @@
         <field name="name">author.details.form.view</field>
         <field name="model">author.details</field>
         <field name="arch" type="xml">
+            <!--            <form create="0" delete="0" edit="0">-->
             <form>
+                <header>
+                    <button name="print_rec" string="Print" type="object"/>
+                    <button name="create_rec" string="Create" type="object"/>
+                    <button name="browse_rec" string="Browse" type="object"/>
+                    <button name="search_rec" string="Search" type="object"/>
+                    <button name="copy_rec" string="Copy" type="object"/>
+                    <button name="delete_rec" string="Delete" type="object"/>
+                </header>
+
                 <sheet>
+                    <button name="%(action_book_dept)d"
+                            type="action" string="Books"
+                            class="oe_stat_button"/>
+
                     <div class="row">
                         <div class="col col-md-2">
                             <field name="photo" widget="image" class="oe_avatar"/>
@@ -43,7 +57,14 @@
         <field name="name">author.details.tree.view</field>
         <field name="model">author.details</field>
         <field name="arch" type="xml">
-            <tree>
+            <!--            <tree editable="top" create="0" edit="0" delete="0">-->
+            <tree editable="top" default_order="born" multi_edit="1">
+                <!--editable is used in the tree view when we have a less field-->
+                <!--It is more convenient to derectly enter the value in tree view ratther than opening a form and than enter -->
+                <!--Create="0" will remove create features form tree view-->
+                <!--edit="0" will remove update features form tree view-->
+                <!--delete="0" will remove delete features form tree view-->
+                <!--default_oreder will sort the field given in the attribute-->
                 <field name="name"/>
                 <field name="nationality"/>
                 <field name="born"/>
@@ -74,6 +95,22 @@
                                 <b>Died:</b>
                                 <field name="died"/>
                             </div>
+                            <div class="o_dropdown_kanban o_dropdown">
+                                <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static"
+                                   href="#" aria-lable="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <a role="menuitem" type="open" class="dropdown-item">Open</a>
+                                    <t t-if="widget.editable">
+                                        <a role="menuitme" type="edit" class="dropdown-item">Edit</a>
+                                    </t>
+                                    <t t-if="widget.deletable">
+                                        <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                    </t>
+                                    <div role="separator" class="dropdown-divider"/>
+                                </div>
+                            </div>
                         </div>
                     </t>
                 </templates>
@@ -90,19 +127,32 @@
                 <field name="name"/>
                 <field name="nationality"/>
                 <!--Adding Filter in the search view-->
+                <filter name="filter_indian_nation" string="Indian" domain="[('nationality','=','Indian')]"/>
+                <filter name="filter_british_nation" string="British" domain="[('nationality','=','British')]"/>
+                <filter name="filter_american_nation" string="American" domain="[('nationality','=','American')]"/>
                 <!--Adding Group By in the seacch view-->
                 <filter name="group_by_nationality" string="Nationality" context="{'group_by':'nationality'}"/>
-
+                <filter name="group_by_name" string="Name" context="{'group_by':'name'}"/>
             </search>
         </field>
     </record>
 
+    <!--+++++++++++++++Calendar view+++++++++++++++++++++++++++++++++-->
+    <record id="author_details_calendar_view" model="ir.ui.view">
+        <field name="name">author.details.calendar.view</field>
+        <field name="model">author.details</field>
+        <field name="arch" type="xml">
+            <calendar date_start="born">
+                <field name="name"/>
+            </calendar>
+        </field>
+    </record>
 
     <!--+++++++++++++++Action view+++++++++++++++++++++++++++++++++-->
     <record id="author_details_action" model="ir.actions.act_window">
         <field name="name">Authors</field>
         <field name="res_model">author.details</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
     </record>
 
     <menuitem id="author_action" action="author_details_action" parent="library_management.menu_books"/>

@@ -5,6 +5,8 @@ from datetime import datetime,timedelta
 class bookIssue(models.Model):
     _name = "book.issue"
     _description = "Book Issue"
+    _rec_name = "name_id"
+
     # _sql_constraints = []
     # This will be used to add constraints in SQL table.
     # It is a list of tuple where each tuple is one constraint
@@ -17,17 +19,16 @@ class bookIssue(models.Model):
         # ('unique_student_code', 'unique(student_code)', 'The code of the student must be unique!')
     ]
 
-
-    name_id = fields.Many2one('library.user', string="Full Name", required=True)
+    name_id = fields.Many2one('library.user', string="Full Name")
     age = fields.Integer(string="Age", required=True)
     gender = fields.Selection([('male', 'Male'),
                                ('female', 'Female'),
                                ('other', 'Other')], string="Gender", required=True)
     email = fields.Char(string="Email")
-    phone = fields.Integer(string="Mobile No.")
+    phone = fields.Char(string="Mobile No.")
     address = fields.Text(string="Address")
     # Exercise2-Q6==================================================
-    book_name = fields.Many2one("book.dept", "Book Name", required=True, ondelete='restrict')
+    book_name_ids = fields.Many2many("book.dept", string="Book Name", required=True, ondelete='restrict')
     book_price = fields.Float(string="Book Price Per Day")
     book_quantity = fields.Integer(string="Quantity")
     date = fields.Date(string="Date", default=datetime.now())
@@ -35,12 +36,13 @@ class bookIssue(models.Model):
     return_date = fields.Date(string="Return Date", compute="_cal_return_date")
     currency_id = fields.Many2one('res.currency', string="Currency")
     total_amt = fields.Monetary(currency_field='currency_id', string="Total Amount", compute="_cal_return_date")
+    book_ids = fields.One2many('book.dept','issue_id','Add Book',copy=True)
     # Exercise2-Q12===================================================
     ref = fields.Reference([('library.stock', ' Stock'),
                             ('res.users', 'Users'),
                             ('res.partner', 'Contacts')], 'Reference')
 
-    status = fields.Selection([('draft', 'Draft'),
+    state = fields.Selection([('draft', 'Draft'),
                                ('isssued', 'Issued'),
                                ('expired', 'Expired'),
                                ('returned', 'Returned')], string='Status', default='draft')
@@ -52,10 +54,19 @@ class bookIssue(models.Model):
 
     @api.depends('date', 'days', 'return_date', 'total_amt', 'book_price')
     def _cal_return_date(self):
-        # self.return_date = self.date + timedelta(days=self.days)
         for issue in self:
             issue.return_date = issue.date + timedelta(days=issue.days)
             issue.total_amt = issue.book_price * issue.days
+            # if issue.state:
+            # print("return",issue.return_date)
+            # print('today',datetime.now().strftime("%Y-%m-%d"))
+            if issue.return_date == datetime.now().strftime("%Y-%m-%d"):
+                    issue.state = 'expired'
+
+    def onchange_return_date(self):
+        for issue in self:
+            if issue.return_date == datetime.now().strftime('%Y-%m-%d'):
+                issue.state = 'expired'
 
     @api.onchange('name_id')
     def onchange_name_id(self):
@@ -84,11 +95,11 @@ class bookIssue(models.Model):
             print('selffffff-------------', self)
             price = 0.0
             if issue.gender == 'male':
-                price = 3000
-            elif issue.gender == 'female':
-                price = 1000
-            elif issue.gender == 'other':
                 price = 500
+            elif issue.gender == 'female':
+                price = 250
+            elif issue.gender == 'other':
+                price = 100
             else:
                 price = 0.0
             issue.book_price = price

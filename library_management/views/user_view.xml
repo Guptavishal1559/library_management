@@ -45,7 +45,11 @@
             <tree>
                 <field name="name"/>
                 <!--Exercise2-Q16======================================-->
-                <field name="age"/>
+                <!--In the list view you can use the sum attribute to get the total of all records-->
+                <!--It displays at the bottom of the list view-->
+                <field name="age" sum="Total"/>
+                <!--In the list view you can use the ave attribue to get the average of the records-->
+                <!--<field name="age" avg="Average"/>-->
                 <field name="gender"/>
                 <field name="email"/>
                 <field name="birth_date"/>
@@ -76,7 +80,7 @@
                                 <br/>
                                 <b>Age:</b>
                                 <field name="age"/>
-                                <b>    Gender:</b>
+                                <b>Gender:</b>
                                 <field name="gender"/>
                                 <br/>
                                 <b>Birth Date:</b>
@@ -95,12 +99,18 @@
         </field>
     </record>
 
-<!--++++++++++++++++++++++++++SEARCH START++++++++++++++++++++++++++++++++++++++++-->
+    <!--++++++++++++++++++++++++++SEARCH START++++++++++++++++++++++++++++++++++++++++-->
     <record id="user_search_view" model="ir.ui.view">
         <field name="name">user.search.view</field>
         <field name="model">library.user</field>
         <field name="arch" type="xml">
             <search>
+                <searchpanel>
+                    <field name="gender" icon="fa-cube"/>
+<!--                    <field name="age" icon="fa-group"/>-->
+<!--                    <field name="email" icon="fa-group"/>-->
+<!--                    <field name="address" icon="fa-group"/>-->
+                </searchpanel>
                 <field name="name"/>
                 <field name="gender"/>
                 <field name="age"/>
@@ -118,34 +128,51 @@
         </field>
     </record>
 
+    <!--++++++++++++++++++++Calender View++++++++++++++++++++++++++++++++++++++++++++-->
+<!--    calendar tag will be used to create a calendar view-->
+<!--    In order to create a calendar view you need either a date or datetime field-->
+<!--    you can use mode to signfy in which mode you want to desplay the calendar view-->
+<!--    mode has values like day, week, month or year-->
+<!--    you can use color to signfy on what field -->
+    <record id="user_calendar_view" model="ir.ui.view">
+        <field name="name">user.calendar.view</field>
+        <field name="model">library.user</field>
+        <field name="arch" type="xml">
+            <calendar date_start="birth_date">
+                <field name="name"/>
+            </calendar>
+        </field>
+    </record>
+
     <!--++++++++++++++++++++ACTIONS START++++++++++++++++++++++++++++++++++++++++++++-->
     <record id="user_action" model="ir.actions.act_window">
         <field name="name">User</field>
         <field name="res_model">library.user</field>
-        <field name="view_mode">kanban,tree,form</field>
-<!--        <field name="context">{'search_default_group_by_gender':1}</field>-->
+        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="context">{}</field>
+        <!--<field name="context">{'search_default_group_by_gender':1}</field>-->
     </record>
 
     <!--Creating a Action for Male Students-->
-<!--    <record id="user_action_male" model="ir.actions.act_window">-->
-<!--        <field name="name">Male</field>-->
-<!--        <field name="res_model">library.user</field>-->
-<!--        <field name="view_mode">kanban,tree,form</field>-->
-<!--        <field name="domain">[('gender','=','male')]</field>-->
-<!--        <field name="context">{'default_gender':'male'}</field>-->
-<!--    </record>-->
+        <record id="user_action_male" model="ir.actions.act_window">
+            <field name="name">Male</field>
+            <field name="res_model">library.user</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('gender','=','male')]</field>
+            <field name="context">{'default_gender':'male'}</field>
+        </record>
 
     <!--    Creating a Action for Female Student-->
-<!--    <record id="user_action_female" model="ir.actions.act_window">-->
-<!--        <field name="name">Female</field>-->
-<!--        <field name="res_model">library.user</field>-->
-<!--        <field name="view_mode">kanban,tree,form</field>-->
-<!--        <field name="domain">[('gender','=','female')]</field>-->
-<!--        <field name="context">{'default_gender':'female'}</field>-->
-<!--    </record>-->
+        <record id="user_action_female" model="ir.actions.act_window">
+            <field name="name">Female</field>
+            <field name="res_model">library.user</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('gender','=','female')]</field>
+            <field name="context">{'default_gender':'female'}</field>
+        </record>
 
     <menuitem id="user_action_menu" action="user_action" parent="library_management.menu_member"/>
-<!--    <menuitem id="user_action_menu_male" action="user_action_male" parent="library_management.menu_member"/>-->
-<!--    <menuitem id="user_action_menu_female" action="user_action_female" parent="library_management.menu_member"/>-->
+    <!--    <menuitem id="user_action_menu_male" action="user_action_male" parent="library_management.menu_member"/>-->
+    <!--    <menuitem id="user_action_menu_female" action="user_action_female" parent="library_management.menu_member"/>-->
 
 </odoo>

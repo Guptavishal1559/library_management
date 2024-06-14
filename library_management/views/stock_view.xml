@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
+    <!--+++++++++++++++++++++++++Form View of stock+++++++++++++++++++++++++++++++++++++++++++-->
     <record id="stock_form_view" model="ir.ui.view">
         <field name="name">stock.form.view</field>
         <field name="model">library.stock</field>
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button id="action_confirm" name="action_confirm" string="Confirm" type="object"
-                            class="btn-primary"/>
+                    <button id="action_confirm" name="action_confirm" string="Confirm" type="object"/>
                     <button id="print_rec" name="print_rec" string="Print" type="object"/>
                     <button id="create_rec" name="create_rec" string="Create" type="object"/>
                     <button id="search_rec" name="search_rec" string="Search" type="object"/>
                     <button id="browse_rec" name="browse_rec" string="Browse" type="object"/>
                     <button id="delete_rec" name="delete_rec" string="Delete" type="object"/>
-                    <field name="status" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+                    <button id="copy_rec" name="copy_rec" string="Copy" type="object"/>
+                    <field name="state" widget="statusbar" options="{'clickable':1}"/>
+<!--                    <button name="%(action_book_dept)d" type="action" string="Books"-->
+<!--                            class="oe_stat_button"/>-->
                 </header>
                 <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+                    <widget name="web_ribbon" title="Active" bg_color="bg-success"
+                            attrs="{'invisible': [('active', '=', False)]}"/>
+                    <widget name="web_ribbon" title="Confirm" bg_color="bg-success"
+                            attrs="{'invisible': ['|',('state','!=','confirm'),('state','in',('draf','done','cancel'))]}"/>
+                    <widget name="web_ribbon" title="Other State" bg_color="bg-warning"
+                            attrs="{'invisible': ['|',('state','=','draft'),('state','not in',('confirm','done','cancel'))]}"/>
                     <div class="row">
                         <div class="col">
                             <h1 bg_color="bg-danger">Book Stock Form</h1>
@@ -29,6 +40,9 @@
                                 <field name="book_id"/>
                                 <field name="isbn"/>
                                 <field name="language"/>
+                                <field name="active"/>
+                                <field name="state"/>
+                                <field name="color" widget="color_picker"/>
                             </group>
                         </div>
                         <div class="col col-md-6">
@@ -38,9 +52,12 @@
                                 <field name="price" avg='Avg'/>
                                 <field name="total_qty"/>
                                 <field name="remaining_qty"/>
+                                <!--                                <field name="date"/>-->
+                                <!--                                <field name="end_date"/>-->
                                 <field name="parent_id"/>
-                                <!--<field name="final_fees_amount"/>-->
-                                <!--<field name="currency_id"/>-->
+                                <field name="currency_id"/>
+                                <field name="final_fees_amount"/>
+                                <field name="sequence"/>
                             </group>
                         </div>
                     </div>
@@ -48,13 +65,6 @@
                         <page id="author" string="Author">
                             <!--Exercise2-Q8======================================================-->
                             <field name="author_ids"/>
-                        </page>
-                        <page id="author" string="Issued">
-                        </page>
-                        <page id="book" string="Books">
-                            <field name="books_ids"/>
-                        </page>
-                        <page id="author" string="Returned">
                         </page>
                     </notebook>
                 </sheet>
@@ -66,28 +76,47 @@
         <field name="name">stock.view.tree</field>
         <field name="model">library.stock</field>
         <field name="arch" type="xml">
-            <tree>
+            <!-- Here if you're creating a tree view we will start with tree tag -->
+            <!-- It is not necessary ot put all the fields in the tree / list view -->
+            <!-- In any view only the fields you have added will be displayed others will be ignored -->
+            <!-- decoration-* is used to change color or font style on records based on condition -->
+            <tree decoration-bf="not state"
+                  decoration-warning="state=='draft'"
+                  decoration-success="state=='confirm'"
+                  decoration-info="state=='done'"
+                  decoration-muted="state=='cancel'"
+                  decoration-danger="active==False"
+            >
+                <!--            <tree>-->
                 <field name="book_id"/>
-                <field name="book_ids"/>
+                <field name="book_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                 <field name="isbn"/>
+                <field name="state"/>
+                <field name="active" widget="boolean_toggle"/>
                 <field name="language"/>
-                <field name="price"/>
-                <field name="remaining_qty"/>
-                <field name="total_qty"/>
+                <field name="price" avg="Average"/>
+                <field name="remaining_qty" sum="Remaining qty" optional="hide"/>
+                <field name="total_qty" sum="Total qty" optional="hide"/>
+                <!--                <field name="date"/>-->
+                <!--                <field name="end_date"/>-->
+                <field name="currency_id"/>
+                <field name="final_fees_amount"/>
+                <field name="sequence" optional="hide"/>
             </tree>
         </field>
     </record>
 
-    <!--    +++++++++++++++++++++++++++Kanban view+++++++++++++++++++++++++++++++++++++-->
+    <!--+++++++++++++++++++++++++++Kanban view+++++++++++++++++++++++++++++++++++++-->
     <record id="stock_kanban_view" model="ir.ui.view">
         <field name="name">stock.kanban.view</field>
         <field name="model">library.stock</field>
         <field name="arch" type="xml">
             <kanban>
                 <field name="id"/>
+                <field name="color"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_global_click oe_kanban_card">
+                        <div t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''} oe_kanban_global_click oe_kanban_card">
                             <div class="o_kanban_image" style="width:30%;float:left;display:inline-block;">
                                 <img alt="No Image" class="oe_avatar"
                                      t-att-src="kanban_image('library.stock','photo',record.id.raw_value)"/>
@@ -112,7 +141,34 @@
                                 <field name="language"/>
                                 <br/>
                                 <b>Bood IDs:</b>
-                                <field name="book_ids"/>
+                                <field name="book_ids" widget="many2many_tags" options="{'color_field':'color'}"/>
+                            </div>
+                            <div class="o_dropdown_kanban o_dropdown">
+                                <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdow"
+                                   data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <!--type="open" is used to open the form view in the non editable mode-->
+                                    <a role="menuitem" type="open" class="dropdown-item">Open</a>
+                                    <!--type="edit" is used to open the form view in the editable mode-->
+                                    <t t-if="widget.editable">
+                                        <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                    </t>
+                                    <!--type="delete" is used to delete the record-->
+                                    <t t-if="widget.deletable">
+                                        <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                    </t>
+                                    <!--Adding separator-->
+                                    <div role="separator" class="dropdown-divider"/>
+                                    <!--Using Object Button's method-->
+                                    <a role="menuitem" type="object" class="dropdown-item" name="search_rec">Search</a>
+                                    <a role="menuitem" type="object" class="dropdown-item" name="copy_rec">Copy</a>
+                                    <a role="menuitem" type="object" class="dropdown-item" name="print_rec">Print</a>
+                                    <div role="separator" class="dropdown-divider"/>
+                                    <!--Adding colorpicker to select the color-->
+                                    <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                </div>
                             </div>
                         </div>
                     </t>
@@ -121,17 +177,45 @@
         </field>
     </record>
 
-    <!--++++++++++++++++++++++++++Graph veiw start+++++++++++++++++++++++++++++++++++++++-->
+    <!--    &lt;!&ndash;++++++++++++++++++++++++++Graph veiw start+++++++++++++++++++++++++++++++++++++++&ndash;&gt;-->
     <record id="stock_graph_view" model="ir.ui.view">
         <field name="name">stock.graph.view</field>
         <field name="model">library.stock</field>
         <field name="arch" type="xml">
-            <graph>
+            <graph type="bar">
+                <!--            <graph type="line">-->
+                <!--            <graph type="pie">-->
+                <field name="book_id" type="measure"/>
+                <field name="book_ids" type="col"/>
+                <field name="language" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <!--++++++++++++++++++++++++++Calendar veiw start+++++++++++++++++++++++++++++++++++++++-->
+    <!--    TODO: This is commented -->
+    <!--    <record id="stock_calendar_view" model="ir.ui.view">-->
+    <!--        <field name="name">stock.calendar.view</field>-->
+    <!--        <field name="model">library.stock</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <calendar date_start="date" date_stop="end_date" mode="month" color="language">-->
+    <!--                <field name="book_id"/>-->
+    <!--                <field name="book_ids"/>-->
+    <!--            </calendar>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <!--++++++++++++++++++++++++++Pivot veiw start+++++++++++++++++++++++++++++++++++++++-->
+    <record id="stock_pivot_view" model="ir.ui.view">
+        <field name="name">stock.pivot.view</field>
+        <field name="model">library.stock</field>
+        <field name="arch" type="xml">
+            <pivot>
                 <field name="book_id"/>
-                <field name="book_ids"/>
+                <!--                <field name="date" interval="day"/>-->
                 <field name="language"/>
                 <field name="price"/>
-            </graph>
+            </pivot>
         </field>
     </record>
 
@@ -141,15 +225,20 @@
         <field name="model">library.stock</field>
         <field name="arch" type="xml">
             <search>
+                <searchpanel>
+                    <field name="language" icon="fa-group"/>
+                    <field name="state" icon="fa-cube"/>
+                </searchpanel>
                 <field name="book_id"/>
                 <field name="book_ids"/>
                 <field name="language"/>
                 <!--Adding group by in the search view-->
-                <filter name="group_by_book_name" string="Book Name" context="{'group_by':'book_id'}"/>
                 <filter name="group_by_book_language" string="Book Language" context="{'group_by':'language'}"/>
-                <filter name="group_by_book_genre" string="Book Genre" context="{'group_by':'book_ids'}"/>
                 <!--Adding filter in the search view-->
-
+                <filter name="filter_by_hindi_lang" string="Hindi" domain="[('language','=','Hindi')]"/>
+                <filter name="filter_by_hindi_eng" string="English" domain="[('language','=','English')]"/>
+                <filter name="filter_by_hindi_marathi" string="Marathi" domain="[('language','=','Marathi')]"/>
+                <filter name="filter_by_hindi_gujrati" string="Gujarati" domain="[('language','=','Gujrati')]"/>
             </search>
         </field>
     </record>
@@ -157,10 +246,11 @@
     <record id="action_library" model="ir.actions.act_window">
         <field name="name">Stock</field>
         <field name="res_model">library.stock</field>
-        <field name="view_mode">kanban,tree,form,graph</field>
+        <field name="view_mode">tree,kanban,form,graph,pivot,search</field>
+        <field name="context">{'search_default_group_by_book_language':1}</field>
     </record>
 
-
+    <!--+++++++++++++++++++++++++Menus items+++++++++++++++++++++++++++++++++++++++++++-->
     <menuitem id="menu_library" name="Library"/>
     <menuitem id="menu_library_item" name="Library" parent="menu_library"/>
     <menuitem id="menu_library_library" action="action_library" parent="menu_library_item"/>

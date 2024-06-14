@@ -5,18 +5,36 @@ class bookDept(models.Model):
     _name = "book.dept"
     _description = 'Book Department'
 
+
     code = fields.Char(string="Code", required=True, copy=False, readonly=True, default=lambda self: _('new'))
     name = fields.Char(string="Book Name", required=True)
     isbn = fields.Char('ISBN')
-    book_price = fields.Float(string="Book Price", digits=(16, 2))
-    genre = fields.Many2many('book.type', string="Genre")
+    # book_price = fields.Float(string="Book Price", digits=(16, 2))
+    genre_ids = fields.Many2many('book.type', string="Genre")
     publish_date = fields.Date("Publish Date")
     language_id = fields.Many2one('book.language', string="Language")
     stock_id = fields.Many2one('library.stock', string='stock')
+    currency_id = fields.Many2one('res.currency', 'Currency')
+    book_price = fields.Monetary(currency_field='currency_id', string='Book Price')
     # exercise2-Q2====================================================================
     # exercise2-Q5====================================================================
-    author_ids = fields.Many2many('author.details', string="Author Details", ondelessste="cascade")
-    quantity = fields.Integer(string="Quantity")
+    author_ids = fields.Many2many('author.details', string="Author Details", ondelete="cascade")
+    # quantity = fields.Integer(string="Quantity")
+    color = fields.Integer('Color')
+    issue_id = fields.Many2one('book.issue', string='Book Issue')
+
+
+    @api.model
+    def name_search(self,name,args=None,operator="ilike",limit=100):
+        args = args or []
+        # print("Name", name)
+        # print("Operator", operator)
+        # print("Args", args)
+        # print("Limit", limit)
+        if name:
+            records = self.search(['|','|',('name', operator, name),('language_id',operator,name)])
+            return records.name_get()
+        return self.search([('name', operator, name)]+args, limit=limit).name_get()
 
     def print_rec(self):
         """
@@ -41,6 +59,7 @@ class bookDept(models.Model):
         print("Ref-------------------->>>", self.env.ref)
         print("User-------------------->>>", self.env.user)
         print("Companies-------------------->>>", self.env.companies)
+
 
     def create_rec(self):
         """
@@ -132,16 +151,6 @@ class bookDept(models.Model):
         print("defautl--------------->>>",default)
         data_copy = self.copy(default=default)
         print("COPY DATA------------------------>>>",data_copy)
-
-
-
-
-
-
-
-
-
-
 
     @api.model
     def create(self, vals):

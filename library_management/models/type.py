@@ -5,3 +5,4 @@ class Type(models.Model):
     _description = "Type"
 
     name = fields.Char(string="Type")
+    color = fields.Integer(string="Color")

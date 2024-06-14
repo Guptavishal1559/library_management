@@ -12,7 +12,7 @@
                     <button name="browse_rec" string="Browse" type="object"/>
                     <button name="delete_rec" string="Delete" type="object"/>
                     <button name="copy_rec" string="Copy" type="object"/>
-<!--                    <button name="update_rec" string="Update" type="object"/>-->
+                    <!--                    <button name="update_rec" string="Update" type="object"/>-->
                 </header>
                 <sheet>
                     <div class="row">
@@ -32,14 +32,16 @@
                                 <field name="name" placeholder="Enter the book name"/>
                                 <field name="isbn"/>
                                 <field name="language_id"/>
-                                <field name="book_price" placeholder="book price"/>
+                                <field name="currency_id"/>
+                                <field name="book_price"/>
                             </group>
                         </div>
                         <div class="col col-md-6">
                             <group>
-                                <field name="genre" placeholder="Genre" widget="many2many_tags"/>
+                                <field name="genre_ids" placeholder="Genre" widget="many2many_tags"/>
                                 <field name="publish_date"/>
-                                <field name="quantity"/>
+                                <!--                                <field name="quantity"/>-->
+                                <field name="color" widget="color_picker"/>
                             </group>
                         </div>
                     </div>
@@ -57,16 +59,21 @@
         <field name="name">book.dept.tree.view</field>
         <field name="model">book.dept</field>
         <field name="arch" type="xml">
+            <!--            <tree delete="0" create="0" edit="0">-->
             <tree>
+                <!--Optional attribute gives the flexbility to the user to display or hide the field on the tree view-->
+                <!--optional="show" by default displays the field on list view but can be hidden-->
+                <!--optional="hide" by default hides the field on list view but cna be displayed-->
                 <field name="code" size="4"/>
                 <field name="name"/>
                 <field name="isbn"/>
                 <field name="language_id"/>
-                <field name="book_price"/>
-                <field name="genre"/>
-                <field name="author_ids"/>
+                <field name="currency_id"/>
+                <field name="book_price" optional="show"/>
+                <field name="genre_ids" widget="many2many_tags" options="{'color_field':'color'}"/>
+                <field name="author_ids" optional="hide"/>
                 <field name="publish_date"/>
-                <field name="quantity"/>
+                <field name="color" widget="colorpicker"/>
             </tree>
         </field>
     </record>
@@ -77,6 +84,7 @@
         <field name="model">book.dept</field>
         <field name="arch" type="xml">
             <kanban>
+                <field name="color"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_global_click oe_kanban_card">
@@ -94,14 +102,33 @@
                                 <field name="language_id"/>
                                 <br/>
                                 <b>Book Price:</b>
+                                <field name="currency_id"/>
                                 <field name="book_price"/>
                                 <br/>
                                 <b>Genre:</b>
-                                <field name="genre"/>
+                                <field name="genre_ids" options="{'color_field':'color'}" widget="many2many_tags"/>
                                 <b>Author:</b>
                                 <field name="author_ids"/>
-                                <b>Qty:</b>
-                                <field name="quantity"/>
+
+                            </div>
+                            <div class="o_dropdown_kanban o_dropdown">
+                                <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown"
+                                   data-display="static" href="#" aria-lable="Dropdown menu" title="Dropdown menu">
+                                    <spna class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <a role="menuitem" type="open" class="dropdown-item">Open</a>
+                                    <t t-if="widget.editable">
+                                        <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                    </t>
+                                    <t t-if="widget.deletable">
+                                        <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                    </t>
+                                    <div role="separator" class="dropdown-divider"/>
+                                    <a role="menuitem" type="object" class="dropdown-item" name="search_rec">Seacrh</a>
+                                    <div role="separator" class="dropdown-divider"/>
+                                    <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                </div>
                             </div>
                         </div>
                     </t>
@@ -110,25 +137,60 @@
         </field>
     </record>
 
+    <!--+++++++++++++++++++++++++++++++++CALENDAR VIEW+++++++++++++++++++++++++++++++++++++++-->
+    <!--    TODO: FOR FUTURE DEVELOPMENT-->
+    <record id="dook_dept_calendar_view" model="ir.ui.view">
+        <field name="name">book.dept.calandar.view</field>
+        <field name="model">book.dept</field>
+        <field name="arch" type="xml">
+            <calendar date_start="publish_date" mode="month">
+                <field name="name"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!--+++++++++++++++++++++++++++++++++GRAPH VIEW+++++++++++++++++++++++++++++++++++++++-->
+    <!--    TODO: FOR FUTURE DEVELOPMENT-->
+    <!--    <record id="dook_dept_graph_view" model="ir.ui.view">-->
+    <!--        <field name="name">book.dept.graph.view</field>-->
+    <!--        <field name="model">book.dept</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <graph></graph>-->
+    <!--        </field>-->
+    <!--    </record>-->
+    <!--+++++++++++++++++++++++++++++++++PIVOT VIEW+++++++++++++++++++++++++++++++++++++++-->
+    <!--    TODO: FOR FUTURE DEVELOPMENT-->
+    <!--    <record id="dook_dept_pivot_view" model="ir.ui.view">-->
+    <!--        <field name="name">book.dept.pivot.view</field>-->
+    <!--        <field name="model">book.dept</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <pivot></pivot>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
     <!--+++++++++++++++++++++++++++++++++SEARCH VIEW+++++++++++++++++++++++++++++++++++++++-->
     <record id="book_dept_search_view" model="ir.ui.view">
         <field name="name">book.dept.search.view</field>
         <field name="model">book.dept</field>
         <field name="arch" type="xml">
             <search>
+                <searchpanel>
+                    <field name="language_id"/>
+                </searchpanel>
                 <field name="name"/>
                 <field name="isbn"/>
-                <field name="genre"/>
+                <field name="genre_ids"/>
                 <field name="author_ids"/>
                 <field name="language_id"/>
                 <!--Adding filter in the search veiw-->
                 <filter name="group_by_language" string="Language" context="{'group_by':'language_id'}"/>
-                <filter name="group_by_genre" string="Genre" context="{'group_by':'genre'}"/>
+                <filter name="group_by_genre" string="Genre" context="{'group_by':'genre_ids'}"/>
                 <!--Adding Group By in the search view-->
                 <filter name="filter_hindi_book" string="Hindi Book" domain="[('language_id','=','Hindi')]"/>
                 <filter name="filter_marathi_book" string="Marathi Book" domain="[('language_id','=','Marathi')]"/>
                 <filter name="filter_english_book" string="English Book" domain="[('language_id','=','English')]"/>
                 <filter name="filter_gujrati_book" string="Gujarati Book" domain="[('language_id','=','Gujrati')]"/>
+                <filter name="filter_date" string="Publish Date" domain="[('publish_date','ilike','1936')]"/>
             </search>
         </field>
     </record>
@@ -137,7 +199,7 @@
     <record id="action_book_dept" model="ir.actions.act_window">
         <field name="name">ADD Book</field>
         <field name="res_model">book.dept</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
     </record>
 
     <menuitem id="book_dept_list" action="action_book_dept" parent="library_management.menu_books"/>

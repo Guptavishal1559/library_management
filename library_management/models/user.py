@@ -4,7 +4,6 @@ from odoo import fields, models, api
 class LibraryUser(models.Model):
     _name = "library.user"
     _description = "Library User"
-    _rec_name = "email"
 
     name = fields.Char(string="Full Name", required=True)
     age = fields.Integer(string="Age", group_operator='Avg')
@@ -73,7 +72,7 @@ class LibraryUser(models.Model):
             'photo': self.photo,
         }
         vals_list = [vals]
-        print('vals list___________________-',vals_list)
+        print('vals list_______________________',vals_list)
         # creating record in the same object
         new_stds = self.create(vals_list)
         print('STDS', new_stds)
@@ -189,12 +188,12 @@ class LibraryUser(models.Model):
         return : A list of tuple containing id and string
         """
         user_list = []
-        print('User list',user_list)
         for user in self:
             # print("USER================>",user) # library.user(id,)
             user_str = ''
             user_email = ''
             if user.name:
+                print("if>>>>>>>>>>>>>>>>>>>")
                 user_str += '[' + str(user.id) + ']'
                 name = user.name.replace(' ', '').lower()
                 user_email += name + "@gmail.com"
@@ -202,7 +201,7 @@ class LibraryUser(models.Model):
 
             user_str += user.name
             user_email += user.name
-            # user_list.append((user.id, user_str))
+            user_list.append((user.id, user_str))
         return user_list
 
 

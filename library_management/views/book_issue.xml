@@ -8,11 +8,11 @@
                 <header>
                     <button name="print_rec" string="Print" type="object"/>
                     <button name="create_rec" string="Create" type="object"/>
-<!--                    <button name="browse_rec" string="Browse" type="object"/>-->
-<!--                    <button name="delete_rec" string="Delete" type="object"/>-->
-<!--                    <button name="copy_rec" string="Copy" type="object"/>-->
-                    <field name="status" widget="statusbar"/>
-<!--                    <button name="search_rec" string="Search" type="object"/>-->
+                    <!--                    <button name="browse_rec" string="Browse" type="object"/>-->
+                    <!--                    <button name="delete_rec" string="Delete" type="object"/>-->
+                    <!--                    <button name="copy_rec" string="Copy" type="object"/>-->
+                    <field name="state" widget="statusbar" options="{'clickable':'0'}"/>
+                    <!--                    <button name="search_rec" string="Search" type="object"/>-->
                 </header>
                 <sheet>
                     <div class="row">
@@ -24,8 +24,8 @@
                     <div class="row">
                         <div class="col col-md-6">
                             <group>
-                                <field name="name_id"/>
-<!--                                <field name="name_id" options="{'no_create':1, 'no_open':1}"/>-->
+<!--                                <field name="name_id"/>-->
+                                <field name="name_id" options="{'no_create':1, 'no_open':1}"/>
                                 <field name="age"/>
                                 <field name="gender" placeholder="Select your gender"/>
                                 <field name="email"/>
@@ -37,8 +37,8 @@
                             <group>
                                 <!--Exercise2-Q9==================================================-->
                                 <!--Exercise2-Q10==================================================-->
-                                <field name="book_name"/>
-<!--                                <field name="book_name" options="{'no_create':1, 'no_open':1}"/>-->
+<!--                                <field name="book_name_ids" widget="many2many_tags"/>-->
+                                <!--&lt;!&ndash;                               <field name="book_name" options="{'no_create':1, 'no_open':1}"/>&ndash;&gt;-->
                                 <field name="book_price"/>
                                 <field name="book_quantity"/>
                                 <field name="date"/>
@@ -47,12 +47,18 @@
                                 <field name="currency_id"/>
                                 <field name="total_amt"/>
                                 <field name="ref"/>
+                                <field name="state"/>
                                 <field name="file_name" invisible="1"/>
                                 <!--Exercise2-Q13===================================================-->
                                 <!--Exercise2-Q15===================================================-->
                                 <field name="document" filename="file_name"/>
                             </group>
                         </div>
+                        <notebook>
+                            <page name="add_book" string="Add Book">
+                                <field name="book_name_ids"/>
+                            </page>
+                        </notebook>
                     </div>
                 </sheet>
             </form>
@@ -71,14 +77,14 @@
                 <field name="email"/>
                 <field name="phone"/>
                 <field name="address"/>
-                <field name="book_name"/>
-                <field name="book_price"/>
-                <field name="book_quantity"/>
-                <field name="date"/>
-                <field name="days"/>
-                <field name="return_date"/>
-                <field name="total_amt"/>
-                <field name="status"/>
+                <field name="book_name_ids" widget="many2many_tags" options="{'color_field':'color'}"/>
+                <field name="book_price" sum="Total"/>
+                <field name="book_quantity" sum="Total" optional="hide"/>
+                <field name="date" optional="hide"/>
+                <field name="days" optional="hide"/>
+                <field name="return_date" optional="hide"/>
+                <field name="total_amt" sum="Total" optional="hide"/>
+                <field name="state" optional="hide"/>
             </tree>
         </field>
     </record>
@@ -88,15 +94,18 @@
         <field name="model">book.issue</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name_id"/>
+                <searchpanel>
+                    <field name="gender" icon="fa-cubes"/>
+                </searchpanel>
+                <!--                <field name="name_id"/>-->
                 <field name="address"/>
-                <field name="book_name"/>
+                <field name="book_name_ids"/>
                 <!--Adding filter in the search view-->
                 <filter name="filter_by_male" string="Male" domain="[('gender','=','male')]"/>
                 <filter name="filter_by_female" string="Female" domain="[('gender','=','female')]"/>
                 <!--Adding group by in the search view-->
                 <filter name="group_by_gender" string="Gender" context="{'group_by':'gender'}"/>
-                <filter name="group_by_book" string="Book" context="{'group_by':'book_name'}"/>
+                <filter name="group_by_book" string="Book" context="{'group_by':'book_name_ids'}"/>
             </search>
         </field>
     </record>
@@ -106,7 +115,8 @@
         <field name="name">Book Issue</field>
         <field name="res_model">book.issue</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{'search_default_group_by_gender':1}</field>
+        <field name="context">{}</field>
+        <!--        <field name="context">{'search_default_group_by_gender':1}</field>-->
     </record>
 
     <menuitem id="book_issue" action="action_book_issue" parent="library_management.menu_books"/>

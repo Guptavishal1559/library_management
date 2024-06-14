@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+<!--    Group for pg Admin-->
+    <record id="group_pg_admin" model="res.groups">
+        <field name="name">PG Administration</field>
+    </record>
+<!--    Group for pg user-->
+    <record id="group_pg_user" model="res.groups">
+        <field name="name">PG User</field>
+    </record>
+</odoo>

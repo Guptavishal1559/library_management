@@ -1,0 +1,20 @@
+{
+    'name': 'Paying Guest Management System',
+    'description': 'It is a Payign Guest Management System',
+    'author': 'Shriti Vishal Gupta',
+    'version': '1.0',
+    'website': 'www.vishalgupta.com',
+    'depends': ['base'],
+    'data': [
+        'security/pg_manage.xml',
+        'security/ir.model.access.csv',
+        'views/room_type_view.xml',
+        'views/facility_view.xml',
+        'views/pg_guest_view.xml',
+        'views/addmission_form_view.xml',
+        'views/employee_view.xml',
+    ],
+    'auto_install': True,
+    'installable': True,
+    'application': True,
+}

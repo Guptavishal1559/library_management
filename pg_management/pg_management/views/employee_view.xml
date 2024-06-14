@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <record id="employee_form_view" model="ir.ui.view">
+        <field name="name">employee.form.view</field>
+        <field name="model">pg.employee</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet class="ms-auto">
+                    <label for="name"/>
+                    <h1 colspan="4">
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <field name="age"/>
+                        <field name="gender"/>
+                        <field name="phone"/>
+                        <field name="email"/>
+                        <field name="address"/>
+                        <field name="join_date"/>
+                        <field name="department"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--    +++++++++++++++++Tree view++++++++++++++++++++++++++++++++++++++==-->
+    <record id="employee_tree_view" model="ir.ui.view">
+        <field name="name">employee.tree.view</field>
+        <field name="model">pg.employee</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="age"/>
+                <field name="gender"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="address"/>
+                <field name="join_date"/>
+                <field name="department"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    +++++++++++++++++Action view++++++++++++++++++++++++++++++++++++++==-->
+    <record id="employee_action" model="ir.actions.act_window">
+        <field name="name">Employee</field>
+        <field name="res_model">pg.employee</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="employee_menu" action="employee_action" parent="pg_management.room_type"/>
+
+</odoo>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--    ++++++++++++++++++++++++++++++Guest form view++++++++++++++++++++++++++++++-->
+    <record id="pg_guest_form_view" model="ir.ui.view">
+        <field name="name">pg.guest.form.view</field>
+        <field name="model">pg.guest</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet class="ms-auto">
+                    <label for="name"/>
+                    <h1 colspan="4">
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="age"/>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="gender"/>
+                            <field name="address"/>
+                        </group>
+                        <group>
+                            <field name="check_in_date"/>
+                            <field name="check_out_date"/>
+                            <field name="price_per_day"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="rooms" string="Rooms">
+                            <field name="room_id" widget="radio"/>
+                        </page>
+                        <page name="room" string="Facility">
+                            <field name="facility_ids" widget="many2many_checkboxes"/>
+                        </page>
+                        <page name="roo" string="Price">
+                            <field name="address"/>
+                        </page>
+                        <page name="ro" string="About PG">
+                            <fields name="address"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--    ++++++++++++++++++++++++++++++Guest Tree view++++++++++++++++++++++++++++++-->
+    <record id="pg_guest_tree_view" model="ir.ui.view">
+        <field name="name">pg.guest.tree.view</field>
+        <field name="model">pg.guest</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="age"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="gender"/>
+                <field name="address"/>
+                <field name="check_in_date"/>
+                <field name="check_out_date"/>
+                <field name="price_per_day"/>
+            </tree>
+        </field>
+    </record>
+    <!--    ++++++++++++++++++++++++++++++Guest Action view++++++++++++++++++++++++++++++-->
+    <record id="pg_guest_action" model="ir.actions.act_window">
+        <field name="name">Guest</field>
+        <field name="res_model">pg.guest</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="guest_menu" action="pg_guest_action" parent="pg_management.room_type"/>
+</odoo>

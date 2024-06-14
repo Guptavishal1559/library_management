@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_room_type_manager,access.room_type.manager,model_room_type,group_pg_admin,1,1,1,1
+access_room_type_user,access.room_type.user,model_room_type,group_pg_user,1,1,0,0
+
+access_pg_facility_manager,access.pg.facility.manager,model_pg_facility,group_pg_admin,1,1,1,1
+access_pg_facility_user,access.pg.facility.user,model_pg_facility,group_pg_user,1,1,0,0
+
+access_pg_guest_manager,access.pg.guest.manager,model_pg_guest,group_pg_admin,1,1,1,1
+access_pg_guest_user,access.pg.guest.user,model_pg_guest,group_pg_user,1,1,0,0
+
+access_addmission_form_manager,access.addmission_form.manager,model_addmission_form,group_pg_admin,1,1,1,1
+access_addmission_form_user,access.addmission_form.user,model_addmission_form,group_pg_user,1,1,0,0
+
+access_pg_employee_manager,access.pg_employee.manager,model_pg_employee,group_pg_admin,1,1,1,1
+access_pg_employee_user,access.pg_employee.user,model_pg_employee,group_pg_user,1,1,0,0

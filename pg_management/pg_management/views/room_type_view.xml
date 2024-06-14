@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <record id="room_type_form_view" model="ir.ui.view">
+        <field name="name">room.type.form.view</field>
+        <field name="model">room.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="price"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!--    +++++++++++++++TREE VIEWE+++++++++++++++++++++++++++++++-->
+    <record id="room_type_tree_view" model="ir.ui.view">
+        <field name="name">room.type.tree.view</field>
+        <field name="model">room.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="price"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    ++++++++++++++++++ACTION VIEW+++++++++++++++++++++++++++++++++++++++-->
+    <record id="room_type_action" model="ir.actions.act_window">
+        <field name="name">Room Type</field>
+        <field name="res_model">room.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="room_type" name="PG Management"/>
+    <menuitem id="room_type_menu" name="Rooms" parent="room_type"/>
+    <menuitem id="room_type_menus" action="room_type_action" parent="room_type_menu"/>
+
+</odoo>
